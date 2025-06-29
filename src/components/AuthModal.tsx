@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import type { LoginCredentials, SignUpCredentials } from "../types";
@@ -11,9 +11,9 @@ interface AuthModalProps {
 }
 
 const modalVariants = {
-  hidden: { opacity: 0, scale: 0.8, y: 50 },
-  visible: { opacity: 1, scale: 1, y: 0 },
-  exit: { opacity: 0, scale: 0.8, y: 50 },
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.95 },
 };
 
 const overlayVariants = {
@@ -36,6 +36,59 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     password: "",
     confirmPassword: "",
   });
+
+  // Prevent body scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Store current scroll position
+      const scrollY = window.scrollY;
+
+      // Add class to body for CSS-based scroll lock
+      document.body.classList.add("modal-open");
+      document.documentElement.classList.add("modal-open");
+
+      // Store scroll position as data attribute
+      document.body.setAttribute("data-scroll-y", scrollY.toString());
+
+      // Prevent scroll events
+      const preventScroll = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      };
+
+      const preventTouchMove = (e: TouchEvent) => {
+        e.preventDefault();
+        return false;
+      };
+
+      // Add event listeners
+      document.addEventListener("wheel", preventScroll, { passive: false });
+      document.addEventListener("touchmove", preventTouchMove, {
+        passive: false,
+      });
+      document.addEventListener("scroll", preventScroll, { passive: false });
+
+      // Return cleanup function
+      return () => {
+        // Remove classes
+        document.body.classList.remove("modal-open");
+        document.documentElement.classList.remove("modal-open");
+
+        // Remove event listeners
+        document.removeEventListener("wheel", preventScroll);
+        document.removeEventListener("touchmove", preventTouchMove);
+        document.removeEventListener("scroll", preventScroll);
+
+        // Restore scroll position
+        const savedScrollY = parseInt(
+          document.body.getAttribute("data-scroll-y") || "0"
+        );
+        document.body.removeAttribute("data-scroll-y");
+        window.scrollTo(0, savedScrollY);
+      };
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,17 +144,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setError("");
   };
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // Only close if clicking directly on the overlay, not on content
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
           className="modal-overlay"
-          onClick={onClose}
+          onClick={handleOverlayClick}
           variants={overlayVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
           transition={{ duration: 0.2 }}
+          // Prevent any scrolling on the overlay
+          onWheel={(e) => e.preventDefault()}
+          onTouchMove={(e) => e.preventDefault()}
         >
           <motion.div
             className="modal-content"
@@ -328,7 +391,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <strong>Email:</strong> demo@example.com
                 </p>
                 <p>
-                  <strong>Password:</strong> demo123
+                  <strong>Password:</strong> password123
                 </p>
               </div>
             </motion.div>
