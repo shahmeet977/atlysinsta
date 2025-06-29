@@ -1,0 +1,370 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Enable hardware acceleration for better performance */
+    transform: translateZ(0);
+    will-change: scroll-position;
+  }
+
+  /* Improve performance with contain */
+  main {
+    contain: layout style paint;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 cursor-pointer;
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px) translateZ(0);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 cursor-pointer;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .input-field {
+    @apply block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200;
+    transform: translateZ(0);
+  }
+
+  .input-field:focus {
+    transform: translateY(-1px) translateZ(0);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
+    /* Ensure proper centering on all devices */
+    padding: 1rem;
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* For better mobile support */
+    overflow-y: auto;
+    /* Prevent scrolling issues on mobile */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-2xl shadow-2xl transform transition-all duration-300 scale-100;
+    will-change: transform;
+    animation: slideInUp 0.3s ease-out;
+    /* Better responsive sizing */
+    width: 100%;
+    max-width: 28rem;
+    /* 448px */
+    margin: auto;
+    padding: 2rem;
+    /* Ensure content doesn't touch edges on small screens */
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    /* Perfect centering */
+    position: relative;
+    /* Mobile-first responsive padding */
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    .modal-overlay {
+      padding: 0.5rem;
+    }
+
+    .modal-content {
+      padding: 1.5rem;
+      max-width: none;
+      width: calc(100% - 1rem);
+      margin: 0.5rem auto;
+      max-height: calc(100vh - 1rem);
+      max-height: calc(100dvh - 1rem);
+      border-radius: 1rem;
+      /* Smaller radius on mobile */
+    }
+  }
+
+  /* Very small screens */
+  @media (max-width: 380px) {
+    .modal-content {
+      padding: 1rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .post-card {
+    @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200;
+    /* Performance optimizations */
+    contain: layout style paint;
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
+  }
+
+  .post-card:hover {
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  }
+
+  .header-logo {
+    @apply w-8 h-8 bg-black rounded-full flex items-center justify-center;
+    transform: translateZ(0);
+    transition: transform 0.3s ease;
+  }
+
+  .header-logo:hover {
+    transform: rotate(360deg) translateZ(0);
+  }
+
+  .emoji-button {
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-200 hover:bg-gray-100 cursor-pointer;
+    transform: translateZ(0);
+  }
+
+  .emoji-button:hover {
+    transform: scale(1.1) translateZ(0);
+  }
+
+  .emoji-button.selected {
+    @apply bg-blue-100 ring-2 ring-blue-500;
+    transform: scale(1.05) translateZ(0);
+  }
+
+  .toolbar-button {
+    @apply p-2 rounded transition-colors duration-200 text-gray-600 hover:bg-gray-100 cursor-pointer;
+    transform: translateZ(0);
+  }
+
+  .toolbar-button:hover {
+    transform: scale(1.05) translateZ(0);
+  }
+
+  .post-action-button {
+    @apply flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .post-action-button:hover {
+    transform: scale(1.05) translateZ(0);
+  }
+
+  .avatar {
+    @apply w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-200;
+    transform: translateZ(0);
+    transition: transform 0.2s ease;
+  }
+
+  .avatar:hover {
+    transform: scale(1.1) translateZ(0);
+  }
+
+  .avatar img {
+    @apply w-full h-full object-cover;
+    /* Improve image rendering */
+    image-rendering: optimizeQuality;
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* Loading animations */
+  .loading-shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .slide-up {
+    animation: slideInUp 0.4s ease-out;
+  }
+
+  .bounce-in {
+    animation: bounceIn 0.6s ease-out;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* GPU acceleration utilities */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+
+  /* Performance optimized animations */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
+
+  .contain-strict {
+    contain: strict;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Improved focus states for accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize for high DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+  .avatar img,
+  .header-logo {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
